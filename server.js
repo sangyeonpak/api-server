@@ -3,9 +3,11 @@ import express from "express";
 import morgan from "morgan";
 import dotenv from "dotenv";
 
-const sql = postgres({ database: "inventory", username: "sangyeonpak", password: "asdf"});
+dotenv.config();
+
+const sql = postgres(process.env.DATABASE_URL);
 const app = express();
-const port = 3000;
+const port = 3001;
 
 app.use(express.json());
 app.use(express.static("./client"));
