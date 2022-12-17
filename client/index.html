@@ -6,8 +6,19 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Document</title>
   <script defer src="app.js"></script>
+  <script src="https://code.jquery.com/jquery-3.6.2.min.js" integrity="sha256-2krYZKh//PcchRtd+H+VyyQoZ/e3EcrkxhM8ycwASPA=" crossorigin="anonymous"></script>
+  <link href="styles.css" rel="stylesheet">
+  <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Indie+Flower&display=swap" rel="stylesheet">
 </head>
 <body>
-  <h1>Inventory</h1>
+  <div class="mainContainer">
+    <div class="inventory">inventory</div>
+    <div class="kitchen">kitchen ⋮</div>
+    <div class="bathroom">bathroom ⋮</div>
+    <div class="itemsList"></div>
+  </div>
+  <nav id="searchBar">
+    <input type="search" placeholder="Search for items">
+  </nav>
 </body>
 </html>

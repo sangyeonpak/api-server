@@ -1,0 +1,40 @@
+*{
+  font-family: 'Indie Flower', cursive;
+  font-size: 25px;
+}
+div{
+  border: 1px solid black;
+  font-size: 35px;
+  font-weight: 500;
+}
+.div:active {
+  transform: scale(0.98);
+  /* Scaling button to 0.98 to its original size */
+  box-shadow: 3px 2px 22px 1px rgba(0, 0, 0, 0.24);
+  /* Lowering the shadow */
+}
+.inventory,
+.kitchen,
+.bathroom {
+  border: 1px solid black;
+  font-size: 50px;
+  padding: 5px;
+  padding-left: 10px;
+  padding-right: 10px;
+  text-align: center;
+}
+
+.kitchen,
+.bathroom {
+  text-align: right;
+}
+
+.inventory {
+  font-weight: 900;
+}
+
+#searchBar{
+  position: fixed;
+  bottom: 0;
+  margin-bottom: 10px;
+}

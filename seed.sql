@@ -1,8 +1,11 @@
-INSERT INTO kitchen (item, count) VALUES ('sponge', 5);
-INSERT INTO kitchen (item, count) VALUES ('spork', 5);
-INSERT INTO kitchen (item, count) VALUES ('ajax', 1);
-INSERT INTO kitchen (item, count) VALUES ('paper towel', 1);
+-- CREATE TABLE items (
+--   name TEXT,
+--   in_kitchen BOOLEAN,
+--   in_bathroom BOOLEAN,
+--   kitchen_count INTEGER,
+--   bathroom_count INTEGER,
+--   total INTEGER GENERATED ALWAYS AS (kitchen_count + bathroom_count) STORED
+-- );
 
-INSERT INTO bathroom (item, count) VALUES ('bleach', 2);
-INSERT INTO bathroom (item, count) VALUES ('hand soap', 1);
-INSERT INTO bathroom (item, count) VALUES ('sponge', 3);
+INSERT INTO items (name, kitchen_count, bathroom_count) VALUES ('sponge', 0, 4);
+INSERT INTO items (name, kitchen_count, 0) VALUES ('spork', 4);

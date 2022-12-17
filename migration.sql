@@ -1,14 +1,8 @@
-DROP TABLE IF EXISTS kitchen;
-DROP TABLE IF EXISTS bathroom;
+DROP TABLE IF EXISTS items;
 
-CREATE TABLE kitchen (
-  id serial,
-  item text,
-  count integer
-);
-
-CREATE TABLE bathroom (
-  id serial,
-  item text,
-  count integer
+CREATE TABLE items (
+  name TEXT UNIQUE,
+  kitchen_count INTEGER,
+  bathroom_count INTEGER,
+  total INTEGER GENERATED ALWAYS AS (kitchen_count + bathroom_count) STORED
 );
