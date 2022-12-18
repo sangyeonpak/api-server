@@ -1,6 +1,10 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
 *{
   font-family: 'Indie Flower', cursive;
-  font-size: 35px;
+  font-size: 30px;
 }
 div{
   border: 1px solid black;
@@ -12,7 +16,7 @@ div{
 
 .inventory,
 .inventory2,
-.table {
+.tables {
   border: 1px solid black;
   font-size: 50px;
   padding: 5px;
@@ -21,7 +25,7 @@ div{
   text-align: center;
 }
 
-.table {
+.tables {
   text-align: right;
 }
 
@@ -37,26 +41,28 @@ div{
   text-align: center;
 }
 
-.searchArea{
+.options{
   position: fixed;
   bottom: 10px;
   display: flex;
+  border: 0px;
   flex-direction: row;
 }
 
 #searchBar{
-  flex-grow: 2;
+  width: 83%;
 }
 
 #searchButton{
   position: absolute;
-  right: 0px;
+  right: 36px;
   width: 15%;
 }
 
-#addItem{
+#addItemButton{
   position: fixed;
   right: 0;
   margin-right: 10px;
   width: 13%;
 }
+

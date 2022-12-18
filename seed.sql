@@ -9,3 +9,4 @@
 
 INSERT INTO items (name, kitchen, bathroom) VALUES ('sponge', 4, 3);
 INSERT INTO items (name, kitchen) VALUES ('spork', 4);
+INSERT INTO items (name, kitchen) VALUES ('ajax', 4);

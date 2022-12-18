@@ -2,7 +2,7 @@ import postgres from "postgres";
 import express from "express";
 import morgan from "morgan";
 import dotenv from "dotenv";
-
+//sudo service postgresql start
 dotenv.config();
 
 // const sql = postgres(process.env.DATABASE_URL);
@@ -31,7 +31,7 @@ app.get("/api/items/:item", (req, res, next) => {
   sql`SELECT * FROM items WHERE name ILIKE ${'%' + item + '%'}`.then((result) => { // funny because it took a while for me to figure it out
     console.log(item);
     if (result.length > 0) res.status(200).json(result);
-    else (res.status(404).send("Item not found. Add it with a POST command!"));
+    else (res.status(404).send('not found'));
   }).catch(next);
 })
 
@@ -80,13 +80,13 @@ app.get("/api/bathroom/:item", (req, res, next) => {
   const item = req.params.item;
   // console.log(isNaN(Number(item)));
   // console.log(Number(item) === NaN); found out this doesn't work
-  if (isNaN(Number(item))) {
+  // if (isNaN(Number(item))) {
     sql`SELECT * FROM bathroom WHERE item ILIKE ${'%' + item + '%'}`.then((result) => { // funny because it took a while for me to figure it out
       if (result.length > 0) res.status(200).json(result);
       else (res.status(404).send("Item not found in your bathroom inventory. Would you like to add it with a POST command?"));
     }).catch(next);
-  }
-  else res.status(400).send("Don't search the item's ID. Search the item's name instead!");
+  // }
+  // else res.status(400).send("Don't search the item's ID. Search the item's name instead!");
 })
 
 
