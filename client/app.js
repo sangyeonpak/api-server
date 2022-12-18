@@ -1,12 +1,14 @@
 let $inventory = $(".inventory");
 let $inventory2 = $(".inventory2");
+let $mainContainer = $(".mainContainer");
+let $addTableButton = $(".addTableButton");
 $inventory2.hide();
 let $tablesList = $(".tablesList");
 let $searchResults = $(".searchResults");
 let $mainItemsList = $('.mainItemsList').toggle();
-$('.mainContainer').append($mainItemsList);
+$mainContainer.append($mainItemsList);
 
-$.get("/api/items").then((data) => {
+$.get("/api/main").then((data) => {
 
   for (let key in data[0]){
     if (key !="name" && key != "total"){
@@ -18,37 +20,36 @@ $.get("/api/items").then((data) => {
 
   for(items of data){
 
-    let $itemResult = $('<div class="item"></div>');
-    $itemResult.html(`${items.name} total: ${items.total} <br>`);
+    let $itemsInMainList = $('<div class="item"></div>');
+    $itemsInMainList.html(`${items.name} total: ${items.total} <br>`);
     for (let key in items){
       if (key !="name" && key != "total"){
         // console.log(key);
-        // console.log($itemResult.html());
-        $itemResult.html(($itemResult.html()).concat(`&nbsp&nbsp&nbsp&nbsp&nbsp${key}: ${items[key]} <br>`));
+        // console.log($itemsInMainList.html());
+        $itemsInMainList.html(($itemsInMainList.html()).concat(`&nbsp&nbsp&nbsp&nbsp&nbsp${key}: ${items[key]} <br>`));
       }
     }
-    $mainItemsList.append($itemResult);
+    $mainItemsList.append($itemsInMainList);
   }
 
 });
 
-let state = false;
 $inventory.click(() => {
   $inventory2.show();
-  state = !state;
   $('.tablesList').hide(100);
   $('.mainItemsList').show(100);
   $searchResults.empty();
   $inventory.hide();
+  $addTableButton.detach();
 })
 
 $inventory2.click(() => {
   $inventory.show();
-  state = !state;
   $('.tablesList').show(100);
   $('.mainItemsList').hide(100);
   $searchResults.empty();
   $inventory2.hide();
+  $mainContainer.append($addTableButton);
 })
 
 let $searchArea = $("#searchArea");
@@ -57,15 +58,29 @@ $searchArea.submit((event) => {
   event.preventDefault();
   $('.tablesList').hide(100);
   $('.mainItemsList').hide(100);
+  $searchResults.empty();
   $inventory.hide();
   $inventory2.show();
+  $addTableButton.detach();
   console.log($searchBar.val());
   if ($searchBar.val() === '' || $searchBar.val() === null) {
     console.log('here');
     $searchResults.html("<h5>Nothing found!</h5>");
   }
+
   $.get(`/api/items/${$searchBar.val()}`).then((data) => {
     console.log(data);
-
+    for(items of data){
+      let $resultingItem = $('<div class="searchedItem"></div>');
+      $resultingItem.html(`${items.name} total: ${items.total} <br>`);
+      for (let key in items){
+        if (key !="name" && key != "total"){
+          // console.log(key);
+          // console.log($resultingItem.html());
+          $resultingItem.html(($resultingItem.html()).concat(`&nbsp&nbsp&nbsp&nbsp&nbsp${key}: ${items[key]} <br>`));
+        }
+      }
+      $searchResults.append($resultingItem);
+    }
   })
 })

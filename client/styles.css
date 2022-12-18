@@ -33,7 +33,11 @@ div{
   font-weight: 900;
 }
 
-#searchArea{
+.addTableButton{
+  text-align: center;
+}
+
+.searchArea{
   position: fixed;
   bottom: 10px;
   display: flex;
@@ -43,8 +47,16 @@ div{
 #searchBar{
   flex-grow: 2;
 }
+
 #searchButton{
   position: absolute;
   right: 0px;
   width: 15%;
+}
+
+#addItem{
+  position: fixed;
+  right: 0;
+  margin-right: 10px;
+  width: 13%;
 }
