@@ -28,7 +28,7 @@ app.get("/api/items/:item", (req, res, next) => {
   // console.log(isNaN(Number(item)));
   // console.log(Number(item) === NaN); found out this doesn't work
   if (isNaN(Number(item))) {
-    sql`SELECT * FROM items WHERE item ILIKE ${'%' + item + '%'}`.then((result) => { // funny because it took a while for me to figure it out
+    sql`SELECT * FROM items WHERE name ILIKE ${'%' + item + '%'}`.then((result) => { // funny because it took a while for me to figure it out
       if (result.length > 0) res.status(200).json(result);
       else (res.status(404).send("Item not found in your items inventory. Would you like to add it with a POST command?"));
     }).catch(next);
