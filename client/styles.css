@@ -10,13 +10,22 @@ div{
   border: 1px solid black;
   font-weight: 500;
 }
+
 .mainContainer{
+  margin-top: 90px;
   margin-bottom: 60px;
 }
 
 .inventory,
+.inventory2{
+  position: fixed;
+  top: 0;
+  width: 100%;
+  background-color: aliceblue;
+}
+.inventory,
 .inventory2,
-.tables {
+.rooms {
   border: 1px solid black;
   font-size: 50px;
   padding: 5px;
@@ -25,7 +34,7 @@ div{
   text-align: center;
 }
 
-.tables {
+.rooms {
   text-align: right;
 }
 
@@ -37,7 +46,7 @@ div{
   font-weight: 900;
 }
 
-.addTableButton{
+.addRoomButton{
   text-align: center;
 }
 
@@ -50,12 +59,13 @@ div{
 }
 
 #searchBar{
+  margin-left: 10px;
   width: 83%;
 }
 
 #searchButton{
   position: absolute;
-  right: 36px;
+  right: 0;
   width: 15%;
 }
 
@@ -64,5 +74,12 @@ div{
   right: 0;
   margin-right: 10px;
   width: 13%;
+}
+
+#itemAddedAlert {
+  z-index: 99999;
+  position: relative;
+  margin: auto;
+  width: 100%;
 }
 
