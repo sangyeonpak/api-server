@@ -10,7 +10,7 @@ let $addItemButton = $('#addItemButton');
 let $addItemModal = $('#addItemModal');
 $addItemModal.hide();
 $mainContainer.append($mainItemsList);
-let $addItemForm = $('#addItemForm');
+let $modalBody = $('#modalBody');
 let $toggleModal = $('.toggleModal');
 
 $.get("/api/main").then((data) => {
@@ -24,7 +24,7 @@ $.get("/api/main").then((data) => {
         <input type="number" name="${key}" id="${key}Count" min="0" class="addItemInputs">
       </div>`);
       $tablesList.append($tables);
-      $addItemForm.append($tablesForModal);
+      $modalBody.append($tablesForModal);
       $tables.text(`${key} ⋮`);
     }
   }
@@ -119,12 +119,36 @@ $addItemButton.click(() => {
   //   postRequestBody.inputFields = 0;
   //   console.log(inputFields);
   // }
-  console.log(postRequestBody);
+
   // for ($addItemInputs.length)
   $addItemName.val(null);
   $addItemInputs.val(null);
-  $toggleModal.click(() => {
-    $addItemName.val(null);
-    $addItemInputs.val(null);
-  });
-});
+
+
+  // $toggleModal.click(() => {
+
+    // });
+    const $form = $('#addItemForm');
+    $form.submit((event) => {
+      event.preventDefault();
+      const data = new FormData(event.target);
+      const requestBody = {};
+      for (var [key, value] of data.entries()) {
+        console.log(key, value);
+        requestBody[key] = value;
+      }
+      console.log(requestBody);
+      console.log(JSON.stringify(requestBody));
+      fetch(`/api/items`, {
+        headers: {
+          "Content-Type": "application/json",
+          'Accept': 'application/json'
+        },
+        method: "POST",
+        body: JSON.stringify(requestBody)
+      })
+    $form.unbind('submit');
+    });
+
+
+  })

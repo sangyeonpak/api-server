@@ -38,13 +38,27 @@ app.get("/api/items/:item", (req, res, next) => {
 
 
 app.post("/api/items", (req, res, next) => {
-  const { item, count } = req.body;
-  if (item !== '' && count !== undefined && Number.isInteger(count)){
-    sql`INSERT INTO items (item, count) VALUES (${item}, ${count}) RETURNING *`.then((result) => {
+  const { name } = req.body;
+  if (name !== ''){
+    console.log(req.body);
+    let variableColumns = [];
+    let variableValuesArray = [];
+    for (let keys in req.body){
+      console.log(keys);
+      variableColumns.push(keys);
+      if (req.body[keys] === '') req.body[keys] = 0;
+      variableValuesArray.push(req.body[keys]);
+    }
+    console.log(variableColumns);
+    console.log(variableColumns.toString());
+    variableValuesArray.shift();
+    let variableValues = (variableValuesArray.toString());
+    console.log(variableValues);
+    console.log(`INSERT INTO items (${variableColumns}) VALUES ('${name}',${variableValues}) RETURNING *`);
+    sql`INSERT INTO items (${variableColumns}) VALUES ('${name}', ${variableValues}) RETURNING *;`.then((result) => {
       res.status(201).json(result[0]);
     }).catch(next)
   }
-  else res.status(400).send("Bad request: make sure you put a integer for your count!")
 })
 
 
