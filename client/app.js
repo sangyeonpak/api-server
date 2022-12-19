@@ -53,6 +53,7 @@ $inventory.click(() => {
   $searchResults.empty();
   $inventory.hide();
   $addTableButton.detach();
+  $itemAlreadyExists.hide();
 })
 
 $inventory2.click(() => {
@@ -62,6 +63,7 @@ $inventory2.click(() => {
   $searchResults.empty();
   $inventory2.hide();
   $mainContainer.append($addTableButton);
+  $itemAlreadyExists.hide();
 })
 
 let $searchArea = $(".searchArea");
@@ -76,12 +78,15 @@ $searchArea.submit((event) => {
   $addTableButton.detach();
 
   if ($searchBar.val() === '' || $searchBar.val() === null) {
-    $searchResults.html("<h5>Nothing found!</h5>");
+    $searchResults.html("<h5>Type something to search!</h5>");
   }
 
   $.get(`/api/items/${$searchBar.val()}`).then((data) => {
     console.log(data.length);
     console.log(data);
+    if(data.length === 0){
+      $searchResults.append("<h5>Nothing found!</h5>")
+    }
     for(items of data){
       let $resultingItem = $('<div class="searchedItem"></div>');
       $resultingItem.html(`${items.name} total: ${items.total} <br>`);
@@ -97,6 +102,8 @@ $searchArea.submit((event) => {
     }
   })
 })
+
+let $itemAlreadyExists = $('.itemAlreadyExists');
 
 $addItemButton.click(() => {
   let $modalBackdrop = $('.modal-backdrop');
@@ -124,7 +131,6 @@ $addItemButton.click(() => {
   $addItemName.val(null);
   $addItemInputs.val(null);
 
-
   // $toggleModal.click(() => {
 
     // });
@@ -134,11 +140,12 @@ $addItemButton.click(() => {
       const data = new FormData(event.target);
       const requestBody = {};
       for (var [key, value] of data.entries()) {
-        console.log(key, value);
+        // console.log(key, value);
         requestBody[key] = value;
       }
-      console.log(requestBody);
-      console.log(JSON.stringify(requestBody));
+
+
+    let $itemsInMainList = $('<div class="item"></div>');
       fetch(`/api/items`, {
         headers: {
           "Content-Type": "application/json",
@@ -146,9 +153,37 @@ $addItemButton.click(() => {
         },
         method: "POST",
         body: JSON.stringify(requestBody)
-      })
+      }).then((response) => {
+        if (response.status === 500) return response.json();
+        else {
+          console.log(response);
+          let $itemsInMainList = $('<div class="item"></div>');
+          $itemsInMainList.html(`${requestBody.name} total: ${Number(requestBody.kitchen) + Number(requestBody.bathroom)} <br>`);
+          for (let key in requestBody){
+            if (key !="name" && key != "total"){
+             console.log(key);
+            // console.log($itemsInMainList.html());
+            $itemsInMainList.html(($itemsInMainList.html()).concat(`&nbsp&nbsp&nbsp&nbsp&nbsp${key}: ${items[key]} <br>`));
+            }
+          }
+          $mainItemsList.append($itemsInMainList);
+          return response.json();
+        }
+      }).then((response) => {
+
+          console.log(typeof response)
+          console.log(response);
+          $itemAlreadyExists.empty();
+          $itemAlreadyExists.append(`Item already exists: ${response.name}`)
+          $itemAlreadyExists.show();
+          $('.tablesList').hide(100);
+          $('.mainItemsList').hide(100);
+          $addTableButton.detach();
+          $inventory.hide();
+          $inventory2.show();
+
+      });
     $form.unbind('submit');
     });
-
 
   })
