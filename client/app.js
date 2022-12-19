@@ -154,33 +154,32 @@ $addItemButton.click(() => {
         method: "POST",
         body: JSON.stringify(requestBody)
       }).then((response) => {
-        if (response.status === 500) return response.json();
-        else {
-          console.log(response);
-          let $itemsInMainList = $('<div class="item"></div>');
-          $itemsInMainList.html(`${requestBody.name} total: ${Number(requestBody.kitchen) + Number(requestBody.bathroom)} <br>`);
-          for (let key in requestBody){
-            if (key !="name" && key != "total"){
-             console.log(key);
-            // console.log($itemsInMainList.html());
-            $itemsInMainList.html(($itemsInMainList.html()).concat(`&nbsp&nbsp&nbsp&nbsp&nbsp${key}: ${items[key]} <br>`));
-            }
-          }
-          $mainItemsList.append($itemsInMainList);
-          return response.json();
-        }
-      }).then((response) => {
+        if (response.status !== 500) return response.json();
 
-          console.log(typeof response)
-          console.log(response);
+          else {
           $itemAlreadyExists.empty();
-          $itemAlreadyExists.append(`Item already exists: ${response.name}`)
+          $itemAlreadyExists.append(`Item already exists: ${requestBody.name}`)
           $itemAlreadyExists.show();
           $('.tablesList').hide(100);
           $('.mainItemsList').hide(100);
           $addTableButton.detach();
           $inventory.hide();
           $inventory2.show();
+          }
+
+      }).then((response) => {
+
+        console.log(response);
+        let $itemsInMainList = $('<div class="item"></div>');
+        $itemsInMainList.html(`${requestBody.name} total: ${Number(requestBody.kitchen) + Number(requestBody.bathroom)} <br>`);
+        for (let key in requestBody){
+          if (key !="name" && key != "total"){
+           console.log(key);
+          // console.log($itemsInMainList.html());
+          $itemsInMainList.html(($itemsInMainList.html()).concat(`&nbsp&nbsp&nbsp&nbsp&nbsp${key}: ${items[key]} <br>`));
+          }
+        }
+        $mainItemsList.append($itemsInMainList);
 
       });
     $form.unbind('submit');
