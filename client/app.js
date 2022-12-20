@@ -28,7 +28,7 @@ $.get("/api/main").then((data) => {
     $itemsInMainList.html(`${items.name} total: ${items.total} <br>`);
     for (let key in items){
       if (key !="name" && key != "total"){
-        $itemsInMainList.html(($itemsInMainList.html()).concat(`<div id=${items.name}At${key}>&nbsp&nbsp&nbsp&nbsp&nbsp${key}: <span id="${items.name}Count" value="${key}">${items[key]}</span><button class="btn patchButton" name="${items.name}" value="${key}">+</button><button class="btn patchButton" name="${items.name}" value="${key}">-</button><br></div>`));
+        $itemsInMainList.html(($itemsInMainList.html()).concat(`<div id=${items.name}At${key}>&nbsp&nbsp&nbsp&nbsp&nbsp${key}: <span id="${items.name}Count" value="${key}">${items[key]}</span><button class="patchButton" name="${items.name}" value="${key}">+</button><button class="patchButton" name="${items.name}" value="${key}">-</button><br></div>`));
       }
     }
     $(".mainItemsList").append($itemsInMainList);
@@ -86,15 +86,21 @@ $searchArea.submit((event) => {
   $itemAlreadyExists.hide();
   $addRoomButton.detach();
   $('.patchButtonSearch').unbind('click');
-  if ($searchBar.val() === '' || $searchBar.val() === null) $searchResults.html("<h5>Type something to search!</h5>").hide().show(100);
+  let $noInput = $(`<div id="noInput"></div>`);
+  $noInput.html(`<h5>Nothing found!</h5>`);
+  $searchResults.append($noInput);
+  if ($searchBar.val() === '' || $searchBar.val() === null) {
+    $searchResults.html(`<div id="blankInput"><h5>Type something to search!</h5></div>`).hide().show(100);
+    $noInput.hide();
+  }
   $.get(`/api/items/${$searchBar.val()}`).then((data) => {
-    if(data.length === 0) $searchResults.append("<h5>Nothing found!</h5>");
+    $noInput.hide();
     for(items of data){
       const $resultingItem = $(`<div class="searchedItem" id=${items.name}Searched name="${items.name}"></div>`);
       $resultingItem.html(`${items.name} total: ${items.total} <br>`);
       for (let key in items){
         if (key !="name" && key != "total"){
-          $resultingItem.html(($resultingItem.html()).concat(`&nbsp&nbsp&nbsp&nbsp&nbsp${key}: <span id="${items.name}CountSearch" value="${key}">${items[key]}</span><button class="btn patchButtonSearch" name="${items.name}" value="${key}">+</button><button class="btn patchButtonSearch" name="${items.name}" value="${key}">-</button><br>`)); //&nbsp ftw
+          $resultingItem.html(($resultingItem.html()).concat(`&nbsp&nbsp&nbsp&nbsp&nbsp${key}: <span id="${items.name}CountSearch" value="${key}">${items[key]}</span><button class="patchButtonSearch" name="${items.name}" value="${key}">+</button><button class="patchButtonSearch" name="${items.name}" value="${key}">-</button><br>`)); //&nbsp ftw
         }
       }
       $searchResults.hide().show(100);
@@ -145,8 +151,8 @@ $addItemButton.click(() => {
     }).then((response) => {
       if (response === undefined) return; //! case 2, continue below for case 1
       showMainMenu();
-      $itemAddedAlert.show();
-      setTimeout(() => $itemAddedAlert.hide(100), "1000");
+      $itemAddedAlert.show(100);
+      setTimeout(() => $itemAddedAlert.hide(100), "1750");
       const $itemsInMainList = $('<div class="item"></div>');
       let total = 0;
       for (let key in requestBody){
@@ -183,8 +189,12 @@ function whichPatchButton (patchButton) {
       body: JSON.stringify(requestBody)
     }).then((response) => {
       return response.json();
-    }).then((response) => {
-      console.log(response);
     })
+    /* span has an id with Count at the end of every name:
+    1) so i can find the name if i get rid of the last 5 letters
+    2) get span.textContent, convert to Number, add 1, then change textContent
+    3) if textContent is 0, and i decrement, prevent it like how i do it in psql
+    4) this is work for tomorrow though lol
+    */
   })
 }
