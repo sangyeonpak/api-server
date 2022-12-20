@@ -216,6 +216,7 @@ div{
   width: 55px;
   height: 50px;
   z-index: 50;
+  color: black;
 }
 
 #areYouSureAlert,
