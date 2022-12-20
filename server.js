@@ -24,7 +24,8 @@ app.get("/api/items/:item", (req, res, next) => {
   const item = req.params.item;
   if (item === '' || item === null) res.status(400).send("Type something!");
   sql`SELECT * FROM items WHERE name ILIKE ${'%' + item + '%'}`.then((result) => {
-    res.status(200).json(result);
+    if (result.length === 0) res.status(404).json(result);
+    else res.status(200).json(result);
   }).catch(next);
 })
 
@@ -34,7 +35,7 @@ app.post("/api/items", (req, res, next) => {
     sql`INSERT INTO items (name,kitchen,bathroom) VALUES (${name},${kitchen},${bathroom}) RETURNING *`.then((result) => {
       res.status(201).json(result[0]);
     }).catch(next)
-    // experimenting with dynamic columns... psql doesn't like that
+    // TODO: experimenting with dynamic columns... psql doesn't like that
     //console.log(req.body);
     // let variableColumns = [];
     // let variableValuesArray = [];
@@ -64,15 +65,37 @@ app.post("/api/items", (req, res, next) => {
 })
 
 app.patch("/api/items/:item", (req, res, next) => {
-  const item = req.params.item;
-  const count = req.body.count;
-  sql`UPDATE items SET count = ${count} WHERE item ILIKE ${item} RETURNING *`.then((result) => {
-    res.status(201).json(result[0]);
-  }).catch(next)
+  const {name, location, operator} = req.body;
+  if (location === 'kitchen' && operator === '+'){
+    sql`UPDATE items SET kitchen=kitchen+1 WHERE name=${name} RETURNING *`.then((result) => {
+      res.status(201).json(result[0]);
+    }).catch(next);
+  }
+  if (location === 'kitchen' && operator === '-'){
+    sql`UPDATE items SET kitchen=kitchen-1 WHERE name=${name} RETURNING *`.then((result) => {
+      res.status(201).json(result[0]);
+    }).catch((error) => {
+      res.status(100).send('Hit non-negative constraint');
+    })
+  }
+  if (location === 'bathroom' && operator === '+'){
+    sql`UPDATE items SET bathroom=bathroom+1 WHERE name=${name} RETURNING *`.then((result) => {
+      res.status(201).json(result[0]);
+    }).catch(next);
+  }
+  if (location === 'bathroom' && operator === '-'){
+    sql`UPDATE items SET bathroom=bathroom-1 WHERE name=${name} RETURNING *`.then((result) => {
+      res.status(201).json(result[0]);
+    }).catch((error) => {
+      res.status(100).send('Hit non-negative constraint');
+    })
+  }
 })
 
 app.delete("/api/items/:item", (req, res, next) => {
   const item = req.params.item;
+  console.log(item);
+  console.log(req.params.body);
   sql`DELETE FROM items WHERE item ILIKE ${item}`.then((result) => {
     res.status(202).send(`Deleted ${item} from items`);
   }).catch(next)

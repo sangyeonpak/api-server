@@ -16,7 +16,7 @@ $.get("/api/main").then((data) => {
       const $roomsForModal = $(`
       <div>
         # in ${key}:
-        <input type="number" name="${key}" id="${key}Count" min="0" class="addItemInputs">
+        <input type="number" name="${key}" id="${key}Input" min="0" class="addItemInputs">
       </div>`);
       $(".roomsList").append($rooms);
       $('#modalBody').append($roomsForModal);
@@ -28,12 +28,11 @@ $.get("/api/main").then((data) => {
     $itemsInMainList.html(`${items.name} total: ${items.total} <br>`);
     for (let key in items){
       if (key !="name" && key != "total"){
-        $itemsInMainList.html(($itemsInMainList.html()).concat(`<div id=${items.name}>&nbsp&nbsp&nbsp&nbsp&nbsp${key}: ${items[key]} <button class="btn patchButton" name="${items.name}" value="${key}">+</button><button class="btn patchButton" name="${items.name}" value="${key}">-</button><br></div>`));
+        $itemsInMainList.html(($itemsInMainList.html()).concat(`<div id=${items.name}At${key}>&nbsp&nbsp&nbsp&nbsp&nbsp${key}: <span id="${items.name}Count" value="${key}">${items[key]}</span><button class="btn patchButton" name="${items.name}" value="${key}">+</button><button class="btn patchButton" name="${items.name}" value="${key}">-</button><br></div>`));
       }
     }
     $(".mainItemsList").append($itemsInMainList);
   }
-  whichPatchButton($(`.patchButton`));
 });
 
 //============================================== inventory and inventory2 buttons have slightly different functionality ===============================
@@ -43,17 +42,20 @@ $inventory2.hide();
 
 const $searchArea = $(".searchArea");
 const $searchBar = $("#searchBar");
-const $searchResults = $(".searchResults");
 const $itemAlreadyExists = $('.itemAlreadyExists');
+const $searchResults = $(".searchResults");
+$searchResults.hide();
 
 $inventory.click(() => {
   $inventory2.show();
   $roomsList.hide(100);
   $mainItemsList.show(100);
   $searchResults.empty();
+  $searchResults.hide();
   $inventory.hide();
   $addRoomButton.detach();
   $itemAlreadyExists.hide();
+  whichPatchButton($(`.patchButton`));
 })
 
 function showMainMenu(){
@@ -62,8 +64,10 @@ function showMainMenu(){
   $mainItemsList.hide(100);
   $searchResults.empty();
   $inventory2.hide();
+  $searchResults.hide();
   $mainContainer.append($addRoomButton);
   $itemAlreadyExists.hide();
+  $('.patchButton').unbind('click');
 }
 
 $inventory2.click(() => {
@@ -73,6 +77,7 @@ $inventory2.click(() => {
 //========================================== do GET request of search query, then append items to search results div ==================================
 $searchArea.submit((event) => {
   event.preventDefault();
+  $searchResults.show();
   $searchResults.empty();
   $roomsList.hide(100);
   $mainItemsList.hide(100);
@@ -80,7 +85,8 @@ $searchArea.submit((event) => {
   $inventory2.show();
   $itemAlreadyExists.hide();
   $addRoomButton.detach();
-  if ($searchBar.val() === '' || $searchBar.val() === null) $searchResults.html("<h5>Type something to search!</h5>");
+  $('.patchButtonSearch').unbind('click');
+  if ($searchBar.val() === '' || $searchBar.val() === null) $searchResults.html("<h5>Type something to search!</h5>").hide().show(100);
   $.get(`/api/items/${$searchBar.val()}`).then((data) => {
     if(data.length === 0) $searchResults.append("<h5>Nothing found!</h5>");
     for(items of data){
@@ -88,7 +94,7 @@ $searchArea.submit((event) => {
       $resultingItem.html(`${items.name} total: ${items.total} <br>`);
       for (let key in items){
         if (key !="name" && key != "total"){
-          $resultingItem.html(($resultingItem.html()).concat(`&nbsp&nbsp&nbsp&nbsp&nbsp${key}: ${items[key]} <button class="btn patchButtonSearch" name="${items.name}" value="${key}">+</button><button class="btn patchButtonSearch" name="${items.name}" value="${key}">-</button><br>`)); //&nbsp ftw
+          $resultingItem.html(($resultingItem.html()).concat(`&nbsp&nbsp&nbsp&nbsp&nbsp${key}: <span id="${items.name}CountSearch" value="${key}">${items[key]}</span><button class="btn patchButtonSearch" name="${items.name}" value="${key}">+</button><button class="btn patchButtonSearch" name="${items.name}" value="${key}">-</button><br>`)); //&nbsp ftw
         }
       }
       $searchResults.hide().show(100);
@@ -108,6 +114,7 @@ $addItemButton.click(() => {
   const $form = $('#addItemForm');
   $addItemName.val(null);
   $addItemInputs.val(null);
+  $(`.patchButton`).unbind('click');
   $form.submit((event) => { // unfortunately gotta leave $form inside to reinitialize event listener
     event.preventDefault();
     let data = new FormData(event.target);
@@ -123,7 +130,7 @@ $addItemButton.click(() => {
       },
       method: "POST",
       body: JSON.stringify(requestBody)
-    }).then((response, error) => {
+    }).then((response) => {
       if (response.status !== 500) return response.json(); //! case 1
       else { //! case 2
         $itemAlreadyExists.empty();
@@ -150,31 +157,34 @@ $addItemButton.click(() => {
       $itemsInMainList.html(`${requestBody.name} total: ${total} <br>`); // gotta find a way later
       for (let key in requestBody){
         if (key !="name" && key != "total"){
-          $itemsInMainList.html(($itemsInMainList.html()).concat(`&nbsp&nbsp&nbsp&nbsp&nbsp${key}: ${requestBody[key]} <br>`));
+          $itemsInMainList.html(($itemsInMainList.html()).concat(`&nbsp&nbsp&nbsp&nbsp&nbsp${key}: <span id="${requestBody.name}Count" value="${key}">${requestBody[key]}</span> <br>`));
         }
       }
       $(".mainItemsList").append($itemsInMainList);
     });
+  whichPatchButton($(`.patchButton`));
   $form.unbind('submit'); // removes event listener at the end to not have duplicate input later
   })
 })
 
-function patchRequest(){
-  fetch(`/api/items`, {
-    headers: {
-      "Content-Type": "application/json",
-      'Accept': 'application/json'
-    },
-    method: "PATCH",
-    body: JSON.stringify(requestBody)
-  })
-}
-
 function whichPatchButton (patchButton) {
   $(patchButton).click((event)=>{
-    console.log(event.target.name);
-    console.log(event.target.value);
-    console.log(event.target.textContent);
+    let requestBody = {
+      "name": event.target.name,
+      "location": event.target.value,
+      "operator": event.target.textContent
+    }
+    fetch(`/api/items/${requestBody.name}`, {
+      headers: {
+        "Content-Type": "application/json",
+        'Accept': 'application/json'
+      },
+      method: "PATCH",
+      body: JSON.stringify(requestBody)
+    }).then((response) => {
+      return response.json();
+    }).then((response) => {
+      console.log(response);
+    })
   })
 }
-whichPatchButton($(`.patchButton`));
