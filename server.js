@@ -5,8 +5,8 @@ import morgan from "morgan";
 import dotenv from "dotenv";
 dotenv.config();
 
-// const sql = postgres(process.env.DATABASE_URL) = production db;
-const sql = postgres({database: "inventory", username: process.env.DB_USERNAME, password: process.env.DB_PASSWORD});
+const sql = postgres(process.env.DATABASE_URL) = production db;
+// const sql = postgres({database: "inventory", username: process.env.DB_USERNAME, password: process.env.DB_PASSWORD});
 const app = express();
 const port = 3000;
 

@@ -149,6 +149,7 @@ div{
   border-left: 1px solid black;
 }
 
+.patchButtonSearch,
 .patchButton{
   display: inline-block;
   font-weight: 400;
