@@ -25,15 +25,17 @@ $.get("/api/main").then((data) => {
   }
   for(items of data){ // appends items items list (dynamic; pulls items from DB)
     const $itemsInMainList = $(`<div class="item" id="${items.name}Main" name="${items.name}"></div>`);
-    $itemsInMainList.html(`${items.name} total: ${items.total} <br>`);
+    $itemsInMainList.html(`${items.name} total: <span class="${items.name}Total">${items.total}</span><br>`);
     for (let key in items){
       if (key !="name" && key != "total"){
-        $itemsInMainList.html(($itemsInMainList.html()).concat(`<div id=${items.name}At${key}>&nbsp&nbsp&nbsp&nbsp&nbsp${key}: <span id="${items.name}Count" value="${key}">${items[key]}</span><button class="patchButton" name="${items.name}" value="${key}">+</button><button class="patchButton" name="${items.name}" value="${key}">-</button><br></div>`));
+        $itemsInMainList.html(($itemsInMainList.html()).concat(`<div id=${items.name}At${key}>&nbsp&nbsp&nbsp&nbsp&nbsp${key}: <span class="${items.name}CountAt${key}" value="${key}">${items[key]}</span><button class="patchButton" name="${items.name}" value="${key}">+</button><button class="patchButton" name="${items.name}" value="${key}">-</button><br></div>`));
       }
     }
     $(".mainItemsList").append($itemsInMainList);
   }
 });
+
+
 
 //============================================== inventory and inventory2 buttons have slightly different functionality ===============================
 const $inventory = $(".inventory");
@@ -97,10 +99,10 @@ $searchArea.submit((event) => {
     $noInput.hide();
     for(items of data){
       const $resultingItem = $(`<div class="searchedItem" id=${items.name}Searched name="${items.name}"></div>`);
-      $resultingItem.html(`${items.name} total: ${items.total} <br>`);
+      $resultingItem.html(`${items.name} total: <span class="${items.name}Total">${items.total}</span></div><br>`);
       for (let key in items){
         if (key !="name" && key != "total"){
-          $resultingItem.html(($resultingItem.html()).concat(`&nbsp&nbsp&nbsp&nbsp&nbsp${key}: <span id="${items.name}CountSearch" value="${key}">${items[key]}</span><button class="patchButtonSearch" name="${items.name}" value="${key}">+</button><button class="patchButtonSearch" name="${items.name}" value="${key}">-</button><br>`)); //&nbsp ftw
+          $resultingItem.html(($resultingItem.html()).concat(`&nbsp&nbsp&nbsp&nbsp&nbsp${key}: <span class="${items.name}CountAt${key}" value="${key}">${items[key]}</span><button class="patchButtonSearch" name="${items.name}" value="${key}">+</button><button class="patchButtonSearch" name="${items.name}" value="${key}">-</button><br>`)); //&nbsp ftw
         }
       }
       $searchResults.hide().show(100);
@@ -160,10 +162,10 @@ $addItemButton.click(() => {
           total += Number(requestBody[key]);
         }
       }
-      $itemsInMainList.html(`${requestBody.name} total: ${total} <br>`); // gotta find a way later
+      $itemsInMainList.html(`${requestBody.name} total: <span class="${requestBody.name}Total">${total}</span> <br>`); // gotta find a way later
       for (let key in requestBody){
         if (key !="name" && key != "total"){
-          $itemsInMainList.html(($itemsInMainList.html()).concat(`&nbsp&nbsp&nbsp&nbsp&nbsp${key}: <span id="${requestBody.name}Count" value="${key}">${requestBody[key]}</span> <br>`));
+          $itemsInMainList.html(($itemsInMainList.html()).concat(`&nbsp&nbsp&nbsp&nbsp&nbsp${key}: <span class="${requestBody.name}CountAt${key}" value="${key}">${requestBody[key]}</span> <br>`));
         }
       }
       $(".mainItemsList").append($itemsInMainList);
@@ -189,6 +191,15 @@ function whichPatchButton (patchButton) {
       body: JSON.stringify(requestBody)
     }).then((response) => {
       return response.json();
+    }).then((response) => {
+      console.log(response);
+      for (let key in response){
+        if (key !="name" && key != "total"){
+          $(`.${response.name}CountAt${key}`).text(response[key]);
+          $(`.${response.name}Total`).text(response.total);
+
+        }
+      }
     })
     /* span has an id with Count at the end of every name:
     1) so i can find the name if i get rid of the last 5 letters
