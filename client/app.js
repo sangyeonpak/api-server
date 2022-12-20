@@ -4,6 +4,9 @@ const $addRoomButton = $(".addRoomButton");
 const $mainItemsList = $('.mainItemsList');
 $mainItemsList.hide();
 
+const $areYouSureAlert = $('#areYouSureAlert');
+$areYouSureAlert.hide();
+
 const $modalBody = $('#modalBody');
 const $addItemModal = $('#addItemModal');
 $addItemModal.hide();
@@ -25,7 +28,7 @@ $.get("/api/main").then((data) => {
   }
   for(items of data){ // appends items items list (dynamic; pulls items from DB)
     const $itemsInMainList = $(`<div class="item" id="${items.name}Main" name="${items.name}"></div>`);
-    $itemsInMainList.html(`${items.name} total: <span class="${items.name}Total">${items.total}</span><br>`);
+    $itemsInMainList.html(`${items.name} total: <span class="${items.name}Total">${items.total}</span><button class="deleteButton" name=${items.name}>x</button><br>`);
     for (let key in items){
       if (key !="name" && key != "total"){
         $itemsInMainList.html(($itemsInMainList.html()).concat(`<div id=${items.name}At${key}>&nbsp&nbsp&nbsp&nbsp&nbsp${key}: <span class="${items.name}CountAt${key}" value="${key}">${items[key]}</span><button class="patchButton" name="${items.name}" value="${key}">+</button><button class="patchButton" name="${items.name}" value="${key}">-</button><br></div>`));
@@ -33,6 +36,7 @@ $.get("/api/main").then((data) => {
     }
     $(".mainItemsList").append($itemsInMainList);
   }
+  whichDeleteButton(`.deleteButton`);
 });
 
 
@@ -89,14 +93,15 @@ $searchArea.submit((event) => {
   $addRoomButton.detach();
   $('.patchButtonSearch').unbind('click');
   let $noInput = $(`<div id="noInput"></div>`);
-  $noInput.html(`<h5>Nothing found!</h5>`);
+  $noInput.html(`Nothing found!`);
   $searchResults.append($noInput);
   if ($searchBar.val() === '' || $searchBar.val() === null) {
-    $searchResults.html(`<div id="blankInput"><h5>Type something to search!</h5></div>`).hide().show(100);
+    $searchResults.html(`<div id="blankInput">Type something to search!</div>`).hide().show(100);
     $noInput.hide();
   }
   $.get(`/api/items/${$searchBar.val()}`).then((data) => {
     $noInput.hide();
+    $searchResults.append($(`<div id="searchedFor">Searched for: ${$searchBar.val()}.</div>`))
     for(items of data){
       const $resultingItem = $(`<div class="searchedItem" id=${items.name}Searched name="${items.name}"></div>`);
       $resultingItem.html(`${items.name} total: <span class="${items.name}Total">${items.total}</span></div><br>`);
@@ -105,7 +110,7 @@ $searchArea.submit((event) => {
           $resultingItem.html(($resultingItem.html()).concat(`&nbsp&nbsp&nbsp&nbsp&nbsp${key}: <span class="${items.name}CountAt${key}" value="${key}">${items[key]}</span><button class="patchButtonSearch" name="${items.name}" value="${key}">+</button><button class="patchButtonSearch" name="${items.name}" value="${key}">-</button><br>`)); //&nbsp ftw
         }
       }
-      $searchResults.hide().show(100);
+      $searchResults.hide().show();
       $searchResults.append($resultingItem);
     }
     whichPatchButton($(`.patchButtonSearch`));
@@ -197,15 +202,34 @@ function whichPatchButton (patchButton) {
         if (key !="name" && key != "total"){
           $(`.${response.name}CountAt${key}`).text(response[key]);
           $(`.${response.name}Total`).text(response.total);
-
         }
       }
     })
-    /* span has an id with Count at the end of every name:
-    1) so i can find the name if i get rid of the last 5 letters
-    2) get span.textContent, convert to Number, add 1, then change textContent
-    3) if textContent is 0, and i decrement, prevent it like how i do it in psql
-    4) this is work for tomorrow though lol
-    */
+  })
+}
+
+function whichDeleteButton(deleteButton){
+  $(deleteButton).click((event) => {
+    $areYouSureAlert.html(`Are you sure you want to delete <u>${event.target.name}</u>?<button id="closeAlert">x</button><br><button id="deleteForReal">Yes</button>`)
+    let requestBody = {
+      "name": event.target.name
+    }
+    $('#deleteForReal').click(() => {
+      $areYouSureAlert.hide();
+      fetch(`/api/items/${requestBody.name}`, {
+        headers: {
+          "Content-Type": "application/json",
+          'Accept': 'application/json'
+        },
+        method: "DELETE",
+        body: JSON.stringify(requestBody)
+      })
+      $(`#${requestBody.name}Main`).remove();
+      $(`#${requestBody.name}Searched`).remove();
+    })
+    $('#closeAlert').click(() => {
+      $areYouSureAlert.hide(100);
+    })
+    $areYouSureAlert.show(100);
   })
 }

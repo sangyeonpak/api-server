@@ -21,8 +21,9 @@
   <div class="inventory2">inventory</div>
   <div class="mainContainer">
     <div class="alert alert-primary" role="alert" id="itemAddedAlert">Item added!</div>
+    <div class="alert alert-danger" role="alert" id="areYouSureAlert"></div>
     <div class="roomsList"></div>
-    <div class="mainItemsList"></div>
+    <div class="mainItemsList"><div id="masterList">master list.</div></div>
     <div class="addRoomButton">+ (wip)</div>
     <div class="searchResults"></div>
     <div class="itemAlreadyExists"></div>
@@ -43,7 +44,7 @@
       <form id="addItemForm">
         <div class="modal-content">
           <div class="modal-header">
-            <h5 class="modal-title" id="exampleModalLabel">Add item</h5>
+            <p class="modal-title" id="modalTitle">Add item</p>
             <button type="button" class="btn-close toggleModal" data-bs-dismiss="modal" aria-label="Close"></button>
           </div>
           <div class="modal-body" id="modalBody">

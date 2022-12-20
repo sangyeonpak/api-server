@@ -61,7 +61,9 @@ app.post("/api/items", (req, res, next) => {
     //   console.log(result);
     //   res.status(201).json(result[0]);
     // }).catch(next)*/
-  }
+
+    //
+  } //? possible work around: make a restricted set number of columns, i.e. 20, and each time someone adds a table, you do a patch request to get the next unnamed column and change the name.
 })
 
 app.patch("/api/items/:item", (req, res, next) => {
@@ -93,11 +95,10 @@ app.patch("/api/items/:item", (req, res, next) => {
 })
 
 app.delete("/api/items/:item", (req, res, next) => {
-  const item = req.params.item;
-  console.log(item);
-  console.log(req.params.body);
-  sql`DELETE FROM items WHERE item ILIKE ${item}`.then((result) => {
-    res.status(202).send(`Deleted ${item} from items`);
+  const { name } = req.body;
+  console.log(name);
+  sql`DELETE FROM items WHERE name=${name} RETURNING *`.then((result) => {
+    res.status(202).json(result);
   }).catch(next)
 })
 
