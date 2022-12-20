@@ -31,7 +31,7 @@ $.get("/api/main").then((data) => {
     $itemsInMainList.html(`${items.name} total: <span class="${items.name}Total">${items.total}</span><button class="deleteButton" name=${items.name}>x</button><br>`);
     for (let key in items){
       if (key !="name" && key != "total"){
-        $itemsInMainList.html(($itemsInMainList.html()).concat(`<div id=${items.name}At${key}>&nbsp&nbsp&nbsp&nbsp&nbsp${key}: <span class="${items.name}CountAt${key}" value="${key}">${items[key]}</span><button class="patchButton" name="${items.name}" value="${key}">+</button><button class="patchButton" name="${items.name}" value="${key}">-</button><br></div>`));
+        $itemsInMainList.html(($itemsInMainList.html()).concat(`<div id=${items.name}At${key}>&nbsp&nbsp${key}: <span class="${items.name}CountAt${key}" value="${key}">${items[key]}</span><button class="patchButton" name="${items.name}" value="${key}">+</button><button class="patchButton" name="${items.name}" value="${key}">-</button><br></div>`));
       }
     }
     $(".mainItemsList").append($itemsInMainList);
@@ -107,7 +107,7 @@ $searchArea.submit((event) => {
       $resultingItem.html(`${items.name} total: <span class="${items.name}Total">${items.total}</span></div><br>`);
       for (let key in items){
         if (key !="name" && key != "total"){
-          $resultingItem.html(($resultingItem.html()).concat(`&nbsp&nbsp&nbsp&nbsp&nbsp${key}: <span class="${items.name}CountAt${key}" value="${key}">${items[key]}</span><button class="patchButtonSearch" name="${items.name}" value="${key}">+</button><button class="patchButtonSearch" name="${items.name}" value="${key}">-</button><br>`)); //&nbsp ftw
+          $resultingItem.html(($resultingItem.html()).concat(`&nbsp&nbsp${key}: <span class="${items.name}CountAt${key}" value="${key}">${items[key]}</span><button class="patchButtonSearch" name="${items.name}" value="${key}">+</button><button class="patchButtonSearch" name="${items.name}" value="${key}">-</button><br>`)); //&nbsp ftw
         }
       }
       $searchResults.hide().show();
@@ -170,7 +170,7 @@ $addItemButton.click(() => {
       $itemsInMainList.html(`${requestBody.name} total: <span class="${requestBody.name}Total">${total}</span> <br>`); // gotta find a way later
       for (let key in requestBody){
         if (key !="name" && key != "total"){
-          $itemsInMainList.html(($itemsInMainList.html()).concat(`&nbsp&nbsp&nbsp&nbsp&nbsp${key}: <span class="${requestBody.name}CountAt${key}" value="${key}">${requestBody[key]}</span> <br>`));
+          $itemsInMainList.html(($itemsInMainList.html()).concat(`&nbsp&nbsp${key}: <span class="${requestBody.name}CountAt${key}" value="${key}">${requestBody[key]}</span> <br>`));
         }
       }
       $(".mainItemsList").append($itemsInMainList);
