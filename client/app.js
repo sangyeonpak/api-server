@@ -49,6 +49,8 @@ $inventory2.hide();
 const $searchArea = $(".searchArea");
 const $searchBar = $("#searchBar");
 const $itemAlreadyExists = $('.itemAlreadyExists');
+$itemAlreadyExists.hide();
+
 const $searchResults = $(".searchResults");
 $searchResults.hide();
 
@@ -103,6 +105,7 @@ $searchArea.submit((event) => {
     $noInput.hide();
     $searchResults.append($(`<div id="searchedFor">Searched for: ${$searchBar.val()}.</div>`))
     for(items of data){
+      console.log(items);
       const $resultingItem = $(`<div class="searchedItem" id=${items.name}Searched name="${items.name}"></div>`);
       $resultingItem.html(`${items.name} total: <span class="${items.name}Total">${items.total}</span></div><br>`);
       for (let key in items){
@@ -160,22 +163,23 @@ $addItemButton.click(() => {
       showMainMenu();
       $itemAddedAlert.show(100);
       setTimeout(() => $itemAddedAlert.hide(100), "1750");
-      const $itemsInMainList = $('<div class="item"></div>');
+      const $itemsInMainList = $(`<div class="item" id="${response.name}Main" name="${response.name}"></div>`);
+      $itemsInMainList.html(`${response.name} total: <span class="${response.name}Total">${response.total}</span><button class="deleteButton" name=${response.name}>x</button><br>`);
       let total = 0;
       for (let key in requestBody){
         if (key !="name" && key != "total") {
           total += Number(requestBody[key]);
         }
       }
-      $itemsInMainList.html(`${requestBody.name} total: <span class="${requestBody.name}Total">${total}</span> <br>`); // gotta find a way later
       for (let key in requestBody){
         if (key !="name" && key != "total"){
-          $itemsInMainList.html(($itemsInMainList.html()).concat(`&nbsp&nbsp${key}: <span class="${requestBody.name}CountAt${key}" value="${key}">${requestBody[key]}</span> <br>`));
+          $itemsInMainList.html(($itemsInMainList.html()).concat(`<div id=${requestBody.name}At${key}>&nbsp&nbsp${key}: <span class="${requestBody.name}CountAt${key}" value="${key}">${requestBody[key]}</span><button class="patchButton" name="${requestBody.name}" value="${key}">+</button><button class="patchButton" name="${requestBody.name}" value="${key}">-</button><br></div>`));
         }
       }
       $(".mainItemsList").append($itemsInMainList);
+      // whichPatchButton($(`.patchButton`)) how
+      whichDeleteButton(`.deleteButton`);
     });
-  whichPatchButton($(`.patchButton`));
   $form.unbind('submit'); // removes event listener at the end to not have duplicate input later
   })
 })
