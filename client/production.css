@@ -150,7 +150,7 @@ div{
 }
 
 #xModal{
-  box-shadow: none;
+  box-shadow: 0px;
 }
 .options{
   position: fixed;
