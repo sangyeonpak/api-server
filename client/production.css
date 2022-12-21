@@ -88,7 +88,7 @@ div{
   margin: 15px;
   border-radius: 15px;
   border: 4px solid black;
-  box-shadow: 6px 10px;
+  box-shadow: 6px 10px black;
   background-color: white;
 }
 
@@ -143,11 +143,14 @@ div{
   background-color: rgb(255, 132, 177);
 }
 
-
 .toggleModal{
   border-radius: 15px;
   border: 4px solid black;
+  box-shadow: 6px 10px black;
+}
 
+#xModal{
+  box-shadow: none;
 }
 .options{
   position: fixed;
@@ -176,6 +179,7 @@ div{
   border: 4px solid black;
   border-radius: 15px;
 }
+
 
 #searchButton{
   position: absolute;
