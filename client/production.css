@@ -54,6 +54,7 @@ div{
   position: relative;
 }
 
+.deleteButtonSearch,
 .deleteButton{
   position: absolute;
   border: 0px;

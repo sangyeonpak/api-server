@@ -105,9 +105,8 @@ $searchArea.submit((event) => {
     $noInput.hide();
     $searchResults.append($(`<div id="searchedFor">Searched for: ${$searchBar.val()}.</div>`))
     for(items of data){
-      console.log(items);
       const $resultingItem = $(`<div class="searchedItem" id=${items.name}Searched name="${items.name}"></div>`);
-      $resultingItem.html(`${items.name} total: <span class="${items.name}Total">${items.total}</span></div><br>`);
+      $resultingItem.html(`${items.name} total: <span class="${items.name}Total">${items.total}</span><button class="deleteButtonSearch" name=${items.name}>x</button><br>`);
       for (let key in items){
         if (key !="name" && key != "total"){
           $resultingItem.html(($resultingItem.html()).concat(`&nbsp&nbsp${key}: <span class="${items.name}CountAt${key}" value="${key}">${items[key]}</span><button class="patchButtonSearch" name="${items.name}" value="${key}">+</button><button class="patchButtonSearch" name="${items.name}" value="${key}">-</button><br>`)); //&nbsp ftw
@@ -116,6 +115,7 @@ $searchArea.submit((event) => {
       $searchResults.hide().show();
       $searchResults.append($resultingItem);
     }
+    whichDeleteButton(`.deleteButtonSearch`);
     whichPatchButton($(`.patchButtonSearch`));
   })
 })
@@ -201,7 +201,6 @@ function whichPatchButton (patchButton) {
     }).then((response) => {
       return response.json();
     }).then((response) => {
-      console.log(response);
       for (let key in response){
         if (key !="name" && key != "total"){
           $(`.${response.name}CountAt${key}`).text(response[key]);
